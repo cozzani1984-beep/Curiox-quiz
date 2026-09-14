@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curiox — Il tuo passato in amore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F8F3EE;
+    --surface:#FFFFFF;
+    --surface-hi:#FBF4EE;
+    --ink:#2A2033;
+    --ink-muted:#655A6C;
+    --hairline:#E6DCD3;
+    --brand:#A8415A;
+    --brand-dim:#D9AEB8;
+    --sicuro:#3F8A5C;
+    --ansioso:#B5820F;
+    --evitante:#2F72A0;
+    --disorg:#71519E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 70% 45% at 50% -8%, #F3E0DE 0%, transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .stage{
+    max-width:560px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:28px 20px 48px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--brand);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px;height:6px;border-radius:50%;
+    background:var(--brand);
+    display:inline-block;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(28px,7vw,38px);
+    line-height:1.08;
+    margin:0 0 14px;
+    letter-spacing:-0.01em;
+  }
+  .lede{
+    color:var(--ink-muted);
+    font-size:15.5px;
+    line-height:1.6;
+    margin:0 0 22px;
+  }
+  .disclaimer{
+    font-size:12.5px;
+    line-height:1.55;
+    color:var(--ink-muted);
+    background:var(--surface-hi);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    padding:12px 14px;
+    font-style:italic;
+  }
+  .cta{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    color:#FFF9F7;
+    background:var(--brand);
+    padding:15px 22px;
+    border-radius:999px;
+    width:100%;
+    margin-top:26px;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 10px 24px -10px rgba(168,65,90,.45);
+  }
+  .cta:active{transform:scale(.98);}
+  .cta:focus-visible{outline:2px solid var(--brand); outline-offset:3px;}
+  .cta.ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--hairline);
+    box-shadow:none;
+    margin-top:12px;
+  }
+
+  /* ---- progress ---- */
+  .progress-wrap{
+    margin-bottom:28px;
+  }
+  .progress-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--ink-muted);
+    margin-bottom:10px;
+    letter-spacing:.04em;
+  }
+  .progress-blocks{
+    display:flex;
+    gap:6px;
+  }
+  .block-seg{
+    flex:1;
+    height:3px;
+    border-radius:2px;
+    background:var(--hairline);
+    overflow:hidden;
+    position:relative;
+  }
+  .block-seg > i{
+    display:block;
+    height:100%;
+    width:0%;
+    background:var(--brand);
+    transition:width .35s ease;
+  }
+
+  /* ---- question card ---- */
+  .qnum{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--brand);
+    letter-spacing:.08em;
+    margin-bottom:10px;
+  }
+  .qtext{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(20px,5.5vw,25px);
+    line-height:1.25;
+    margin:0 0 22px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .opt{
+    text-align:left;
+    background:var(--surface);
+    border:1px solid var(--hairline);
+    color:var(--ink);
+    border-radius:12px;
+    padding:15px 16px;
+    font-size:15px;
+    line-height:1.45;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    box-shadow:0 1px 2px rgba(42,32,51,.04);
+    transition:border-color .15s ease, background .15s ease, transform .1s ease, box-shadow .15s ease;
+  }
+  .opt:hover{border-color:var(--brand-dim); background:var(--surface-hi); box-shadow:0 4px 14px -6px rgba(42,32,51,.12);}
+  .opt:active{transform:scale(.99);}
+  .opt:focus-visible{outline:2px solid var(--brand); outline-offset:2px;}
+  .opt.selected{
+    border-color:var(--brand);
+    background:var(--surface-hi);
+    box-shadow:0 0 0 1px var(--brand) inset;
+    font-weight:500;
+  }
+  .opt.selected::after{
+    content:"✓";
+    float:right;
+    color:var(--brand);
+    font-weight:700;
+    margin-left:8px;
+  }
+  @media (hover:none), (pointer:coarse){
+    .opt:hover{border-color:var(--hairline); background:var(--surface); box-shadow:0 1px 2px rgba(42,32,51,.04);}
+    .opt.selected:hover{border-color:var(--brand); background:var(--surface-hi);}
+  }
+
+  .backlink{
+    background:none;border:none;color:var(--ink-muted);
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+    letter-spacing:.05em;
+    cursor:pointer;margin-bottom:18px;padding:0;
+    text-align:left;width:fit-content;
+  }
+  .backlink:hover{color:var(--ink);}
+
+  /* ---- result ---- */
+  .result-badge{
+    width:64px;height:64px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:20px;
+    box-shadow:0 0 0 1px var(--hairline), 0 12px 32px -12px var(--accent);
+  }
+  .result-badge svg{width:34px;height:34px;}
+  .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:8px;
+  }
+  .result-title{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(24px,6.5vw,30px);
+    line-height:1.2;
+    margin:0 0 18px;
+    color:var(--ink);
+  }
+  .result-body{
+    font-size:15.5px;
+    line-height:1.65;
+    color:var(--ink-muted);
+    margin-bottom:20px;
+  }
+  .secondary-note{
+    font-size:13.5px;
+    color:var(--ink-muted);
+    background:var(--surface-hi);
+    border-left:2px solid var(--accent);
+    border-radius:0 8px 8px 0;
+    padding:11px 14px;
+    margin-bottom:22px;
+    line-height:1.55;
+  }
+  .secondary-note b{color:var(--ink);}
+  .consigli{
+    background:var(--surface-hi);
+    border:1px solid var(--hairline);
+    border-radius:14px;
+    padding:18px 18px 6px;
+    margin-bottom:22px;
+    box-shadow:0 1px 2px rgba(42,32,51,.04);
+  }
+  .consigli-title{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-muted);margin-bottom:12px;
+  }
+  .consigli ul{
+    margin:0;padding:0 0 12px;list-style:none;
+  }
+  .consigli li{
+    position:relative;
+    padding-left:18px;
+    margin-bottom:12px;
+    font-size:14.5px;
+    line-height:1.55;
+    color:var(--ink);
+  }
+  .consigli li::before{
+    content:"";
+    position:absolute;left:0;top:7px;
+    width:6px;height:6px;border-radius:50%;
+    background:var(--accent);
+  }
+  .closing-disclaimer{
+    font-size:12px;line-height:1.6;color:var(--ink-muted);
+    font-style:italic;margin-top:8px;padding-top:18px;
+    border-top:1px solid var(--hairline);
+  }
+  .fade-in{animation:fadeIn .4s ease both;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){
+    .fade-in{animation:none;}
+    .cta,.opt{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage"></div>
+
+<script>
+/* ====================== DATA ====================== */
+const QUESTIONS = [
+  // BLOCCO 1
+  {block:1, text:"Quando penso alle mie relazioni passate, la sensazione dominante è:", opts:{
+    A:"Sono cresciuto/a, anche dagli errori",
+    B:"Mi sono sentito/a spesso in ansia o non abbastanza",
+    C:"Mi sono sentito/a soffocato/a o con poco spazio",
+    D:"È un misto confuso di cose belle e dolorose"}},
+  {block:1, text:"Come è finita di solito una relazione importante?", opts:{
+    A:"Con una conversazione onesta, anche se dolorosa",
+    B:"Con me che ho insistito fino all'ultimo per salvarla",
+    C:"Sono stato/a io ad allontanarmi per primo/a",
+    D:"In modo caotico, con ripensamenti da entrambe le parti"}},
+  {block:1, text:"Il mio ex (o i miei ex) direbbe di me che:", opts:{
+    A:"Ero presente e disponibile al dialogo",
+    B:"Chiedevo spesso rassicurazioni",
+    C:"Ero difficile da \"raggiungere\" emotivamente",
+    D:"Ero imprevedibile, a volte vicino/a a volte distante"}},
+  {block:1, text:"Quando qualcosa andava storto in coppia, io:", opts:{
+    A:"Affrontavo il problema appena possibile",
+    B:"Mi agitavo e temevo il peggio",
+    C:"Prendevo tempo o mi chiudevo",
+    D:"Reagivo in modo diverso a seconda del momento"}},
+  {block:1, text:"Guardando indietro, il mio più grande rimpianto è:", opts:{
+    A:"Non ne ho di particolari, ho fatto scelte consapevoli",
+    B:"Non essermi fidato/a abbastanza di essere amato/a",
+    C:"Non essermi aperto/a di più",
+    D:"Aver ripetuto sempre lo stesso errore senza capire perché"}},
+  {block:1, text:"Il tradimento (subito o temuto) nella mia storia:", opts:{
+    A:"Non è un tema centrale della mia storia",
+    B:"È una paura che mi accompagna spesso",
+    C:"Preferisco non parlarne, mi tengo le distanze dal tema",
+    D:"Ha lasciato un segno che torna in modo imprevedibile"}},
+  // BLOCCO 2
+  {block:2, text:"Quando il partner è distante per qualche giorno, io:", opts:{
+    A:"Penso che abbia solo bisogno di spazio",
+    B:"Comincio a preoccuparmi e cerco contatto",
+    C:"Non ci penso, anzi mi sento più a mio agio",
+    D:"Dipende dall'umore: a volte mi agito, a volte lo ignoro"}},
+  {block:2, text:"La mia paura più grande in una relazione è:", opts:{
+    A:"Non ne ho una dominante",
+    B:"Essere abbandonato/a o sostituito/a",
+    C:"Perdere la mia libertà o identità",
+    D:"Sia essere lasciato/a sia essere \"intrappolato/a\""}},
+  {block:2, text:"Quando litigo con qualcuno che amo:", opts:{
+    A:"Cerco un confronto rispettoso il prima possibile",
+    B:"Ho paura che la relazione sia finita",
+    C:"Mi chiudo o mi allontano fisicamente",
+    D:"Reagisco in modo intenso, poi mi pento"}},
+  {block:2, text:"Fidarmi di una persona nuova è:", opts:{
+    A:"Un processo naturale, ci metto il tempo giusto",
+    B:"Qualcosa che faccio in fretta, forse troppo",
+    C:"Molto difficile, tendo a proteggermi",
+    D:"Altalenante, un giorno mi fido, il giorno dopo dubito"}},
+  {block:2, text:"Il controllo (mio o del partner) nelle relazioni:", opts:{
+    A:"Non è un tema che mi riguarda particolarmente",
+    B:"Controllo spesso per calmare l'ansia",
+    C:"Non sopporto sentirmi controllato/a",
+    D:"Alterno momenti di gelosia a momenti di totale disinteresse"}},
+  {block:2, text:"Se penso al mio bisogno di vicinanza emotiva:", opts:{
+    A:"Ho un buon equilibrio tra vicinanza e spazio personale",
+    B:"Ne ho tanto, forse troppo, bisogno costante",
+    C:"Preferisco gestire le cose da solo/a",
+    D:"Lo desidero ma quando arriva mi spaventa"}},
+  // BLOCCO 3
+  {block:3, text:"Nella prossima relazione, la cosa più importante per me è:", opts:{
+    A:"Reciprocità e comunicazione onesta",
+    B:"Sentirmi scelto/a e rassicurato/a spesso",
+    C:"Mantenere la mia autonomia",
+    D:"Trovare stabilità, che finora mi è mancata"}},
+  {block:3, text:"Il mio ritmo ideale per aprirmi a qualcuno è:", opts:{
+    A:"Graduale ma naturale",
+    B:"Veloce, mi affeziono presto",
+    C:"Molto lento, ho bisogno di tempo per fidarmi",
+    D:"Imprevedibile, dipende dalla persona"}},
+  {block:3, text:"Quello che NON voglio ripetere è:", opts:{
+    A:"Non ho grandi \"errori\" da evitare, voglio solo continuare a crescere",
+    B:"Stare con qualcuno che mi fa dubitare di me",
+    C:"Sentirmi soffocato/a o senza spazio",
+    D:"Rivivere la stessa instabilità di prima"}},
+  {block:3, text:"Il partner ideale per me è qualcuno che:", opts:{
+    A:"Comunica con chiarezza e rispetta i miei tempi",
+    B:"Mi dà conferme costanti del suo interesse",
+    C:"Mi lascia molto spazio e autonomia",
+    D:"Mi dà stabilità e pazienza, anche nei momenti difficili"}},
+  {block:3, text:"Quando immagino una relazione sana, penso soprattutto a:", opts:{
+    A:"Equilibrio tra intimità e indipendenza",
+    B:"Sentirmi al sicuro e non abbandonato/a",
+    C:"Rispetto reciproco dei confini personali",
+    D:"Serenità, dopo tanta instabilità"}},
+  {block:3, text:"Oggi, rispetto all'amore, mi sento:", opts:{
+    A:"Pronto/a, con consapevolezza di ciò che voglio",
+    B:"Con voglia di amare ma paura di soffrire ancora",
+    C:"Cauto/a, preferisco andare piano",
+    D:"In un momento di transizione, ancora in cerca di chiarezza"}},
+];
+
+const PROFILES = {
+  A:{
+    key:"A", name:"Sicuro", color:"var(--sicuro)",
+    quote:"Il tuo passato ti ha insegnato più che spaventato",
+    body:"Le tue relazioni passate, anche quelle finite male, non ti hanno lasciato paure paralizzanti: le hai elaborate e ne hai fatto esperienza. Tendi a comunicare con chiarezza, ad affrontare i conflitti invece di evitarli, e a bilanciare vicinanza e spazio personale. Il tuo punto di attenzione: non dare per scontato che tutti comunichino come te — nella prossima relazione, la pazienza verso i tempi altrui sarà la tua carta vincente.",
+    consigli:["Continua a scegliere partner che sanno comunicare quanto te.","Non confondere la tua sicurezza con l'assenza di bisogno di rassicurazioni ogni tanto — va bene chiederle."],
+    icon:(c)=>`<svg viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="6" stroke="${c}" stroke-width="2"/><circle cx="17" cy="17" r="13" stroke="${c}" stroke-width="1.5" opacity=".5"/></svg>`
+  },
+  B:{
+    key:"B", name:"Ansioso", color:"var(--ansioso)",
+    quote:"Ami intensamente, ma il bisogno di conferme ti pesa",
+    body:"Il tuo passato ti ha lasciato la sensazione di dover \"guadagnarti\" l'amore, o di non essere mai del tutto al sicuro nella relazione. Per questo cerchi spesso rassicurazioni, ti agiti quando il partner è distante, e a volte insisti in relazioni che invece andrebbero chiuse. Non è un difetto: è una strategia che il tuo passato ti ha insegnato per proteggerti dall'abbandono. La buona notizia è che si può disimparare.",
+    consigli:["Lavora sull'autostima indipendente dalla relazione.","Scegli partner che sanno rassicurare con costanza, non con intensità sporadica.","Impara a leggere il \"silenzio\" del partner come spazio, non come minaccia."],
+    icon:(c)=>`<svg viewBox="0 0 34 34" fill="none"><path d="M6 20c3-8 6-12 11-12s8 4 11 12" stroke="${c}" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="22" r="2.5" fill="${c}"/></svg>`
+  },
+  C:{
+    key:"C", name:"Evitante", color:"var(--evitante)",
+    quote:"La tua indipendenza è una forza — ma anche una corazza",
+    body:"Hai imparato a contare soprattutto su te stesso/a, e questo ti rende una persona resiliente. Ma spesso questa forza diventa distanza: fatichi ad aprirti del tutto, e quando la relazione si fa troppo intima, la prima reazione è allontanarti. Non è disinteresse: è protezione da qualcosa che in passato ti ha fatto sentire soffocato/a o deluso/a.",
+    consigli:["Prova a restare nella conversazione difficile un minuto in più prima di chiuderti.","Comunica il tuo bisogno di spazio invece di sparire.","Scegli un partner che rispetti i tuoi tempi senza lasciarti sempre la porta socchiusa."],
+    icon:(c)=>`<svg viewBox="0 0 34 34" fill="none"><rect x="7" y="7" width="20" height="20" rx="4" stroke="${c}" stroke-width="2"/><path d="M13 17h8" stroke="${c}" stroke-width="2" stroke-linecap="round"/></svg>`
+  },
+  D:{
+    key:"D", name:"Disorganizzato", color:"var(--disorg)",
+    quote:"Vuoi vicinanza e la temi allo stesso tempo",
+    body:"Il tuo passato è stato probabilmente più caotico o imprevedibile di quello di altri, e questo ti ha lasciato un conflitto interno: desideri intimità ma quando arriva ti spaventa, oscilli tra il cercare e l'allontanare. Non è incoerenza: è il modo in cui la tua mente cerca di proteggerti da esperienze che in passato sono state instabili.",
+    consigli:["Cerca stabilità in un partner paziente, che non risponda ai tuoi momenti di distanza con distanza uguale e contraria.","Nota il momento in cui inizi ad allontanarti e chiediti: \"sto proteggendomi o sto scappando da qualcosa di buono?\"","Dati il tempo: il cambiamento qui è più lento, ma possibile."],
+    icon:(c)=>`<svg viewBox="0 0 34 34" fill="none"><path d="M17 6l3.5 8L27 17l-6.5 3-3.5 8-3.5-8L7 17l6.5-3z" stroke="${c}" stroke-width="2" stroke-linejoin="round"/></svg>`
+  }
+};
+
+const DISCLAIMER = "Questo test è pensato per la riflessione personale e non sostituisce un percorso con un professionista della salute mentale.";
+
+/* ====================== STATE ====================== */
+let state = {
+  screen:"start", // start | quiz | result
+  order:[], // shuffled letters per question, built when quiz starts
+  current:0,
+  answers:[] // array of letters chosen
+};
+
+function shuffledLetters(){
+  const letters=["A","B","C","D"];
+  for(let i=letters.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [letters[i],letters[j]]=[letters[j],letters[i]];
+  }
+  return letters;
+}
+
+function startQuiz(){
+  state.screen="quiz";
+  state.current=0;
+  state.answers=new Array(QUESTIONS.length).fill(null);
+  state.order = QUESTIONS.map(()=>shuffledLetters());
+  render();
+}
+
+function selectAnswer(letter){
+  state.answers[state.current]=letter;
+  if(state.current < QUESTIONS.length-1){
+    state.current++;
+    render();
+  } else {
+    state.screen="result";
+    render();
+  }
+}
+
+function goBack(){
+  if(state.current>0){
+    state.current--;
+    render();
+  } else {
+    state.screen="start";
+    render();
+  }
+}
+
+function computeResult(){
+  const counts={A:0,B:0,C:0,D:0};
+  state.answers.forEach(l=>counts[l]++);
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const primary = sorted[0][0];
+  let secondary = null;
+  if(sorted[1] && sorted[0][1]-sorted[1][1] <= 2 && sorted[1][1] > 0){
+    secondary = sorted[1][0];
+  }
+  return {counts, primary, secondary};
+}
+
+/* ====================== RENDER ====================== */
+function render(){
+  const stage = document.getElementById("stage");
+  if(state.screen==="start") stage.innerHTML = renderStart();
+  else if(state.screen==="quiz") stage.innerHTML = renderQuiz();
+  else stage.innerHTML = renderResult();
+  attachHandlers();
+  window.scrollTo(0,0);
+}
+
+function renderStart(){
+  return `
+  <div class="fade-in">
+    <div class="eyebrow">Curiox</div>
+    <h1>Il tuo passato in amore</h1>
+    <p class="lede">18 domande, due minuti. Nessuna risposta giusta o sbagliata: solo un modo per guardare più da vicino come ami, cosa temi e cosa cerchi davvero nella prossima relazione.</p>
+    <div class="disclaimer">${DISCLAIMER}</div>
+    <button class="cta" id="startBtn">Inizia il test</button>
+  </div>`;
+}
+
+function renderQuiz(){
+  const q = QUESTIONS[state.current];
+  const letters = state.order[state.current];
+  const blockStart = [0,6,12];
+  const blockLabels = ["Esperienze passate","Paure e pattern ricorrenti","Cosa cerco ora"];
+  const totalDone = state.current;
+  return `
+  <div class="fade-in">
+    <button class="backlink" id="backBtn">← indietro</button>
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span>Blocco ${q.block} · ${blockLabels[q.block-1]}</span>
+        <span>${state.current+1} / ${QUESTIONS.length}</span>
+      </div>
+      <div class="progress-blocks">
+        ${[0,1,2].map(b=>{
+          const from = blockStart[b], to = b<2?blockStart[b+1]:QUESTIONS.length;
+          const doneInBlock = Math.min(Math.max(totalDone - from,0), to-from);
+          const pct = q.block-1===b ? Math.round(((state.current - from)/(to-from))*100 + (100/(to-from))*0 ) : (q.block-1>b?100:0);
+          const fillPct = q.block-1>b ? 100 : (q.block-1===b ? Math.round(((state.current-from)/(to-from))*100) : 0);
+          return `<div class="block-seg"><i style="width:${fillPct}%"></i></div>`;
+        }).join("")}
+      </div>
+    </div>
+    <div class="qnum">Domanda ${state.current+1}</div>
+    <h2 class="qtext">${q.text}</h2>
+    <div class="options">
+      ${letters.map(l=>`<button class="opt${state.answers[state.current]===l?' selected':''}" data-letter="${l}">${q.opts[l]}</button>`).join("")}
+    </div>
+  </div>`;
+}
+
+function renderResult(){
+  const {counts, primary, secondary} = computeResult();
+  const p = PROFILES[primary];
+  const s = secondary ? PROFILES[secondary] : null;
+  return `
+  <div class="fade-in" style="--accent:${p.color}">
+    <div class="result-badge" style="background:color-mix(in srgb, ${p.color} 16%, var(--surface));">
+      ${p.icon(p.color)}
+    </div>
+    <div class="kicker">Il tuo profilo · ${p.name}</div>
+    <h2 class="result-title">"${p.quote}"</h2>
+    <p class="result-body">${p.body}</p>
+    ${s ? `<div class="secondary-note">Nelle tue risposte emerge anche un tratto secondario da profilo <b>${s.name}</b>: vale la pena tenerlo d'occhio, spesso è lì che si nasconde un pattern meno visibile.</div>` : ``}
+    <div class="consigli">
+      <div class="consigli-title">Consigli per te</div>
+      <ul>${p.consigli.map(c=>`<li>${c}</li>`).join("")}</ul>
+    </div>
+    <button class="cta ghost" id="restartBtn">Rifai il test</button>
+    <p class="closing-disclaimer">${DISCLAIMER}</p>
+  </div>`;
+}
+
+function attachHandlers(){
+  const startBtn = document.getElementById("startBtn");
+  if(startBtn) startBtn.addEventListener("click", startQuiz);
+
+  const backBtn = document.getElementById("backBtn");
+  if(backBtn) backBtn.addEventListener("click", goBack);
+
+  const restartBtn = document.getElementById("restartBtn");
+  if(restartBtn) restartBtn.addEventListener("click", ()=>{state.screen="start"; render();});
+
+  document.querySelectorAll(".opt").forEach(btn=>{
+    btn.addEventListener("click", ()=> selectAnswer(btn.dataset.letter));
+  });
+}
+
+render();
+</script>
+</body>
+</html>
